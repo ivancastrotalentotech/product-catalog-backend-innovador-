@@ -1,9 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateProductoDto } from './dto/create-producto.dto';
-import { UpdateProductoDto } from './dto/update-producto.dto';
-
-import { findAll }  from '../common/query/catalogos-productos';
+import { findAll, updateProducts, insertProducts, deleteProducts }  from '../common/query/catalogos-productos';
 import { NeoPool  } from '../pg.pool';
+import { Product } from '../common/Interface/interface.product';
 
 @Injectable()
 export class ProductoService {
@@ -15,8 +13,27 @@ export class ProductoService {
   ){}
 
 
-  create(createProductoDto: CreateProductoDto) {
-    return 'This action adds a new producto';
+  async create(createProductoDto: Product) {
+    const { id, nombre, descripcion, precio, categoria, imagen } = createProductoDto;
+    try {
+     
+      this.logger.debug(`Creando Producto id: ${JSON.stringify(createProductoDto)}`);
+      await this.neoPool.query(insertProducts, [nombre, descripcion, precio, categoria, imagen]);
+
+      return {
+        status: 'success',
+        message: 'Productos editado exitosamente',
+        data: id,
+      };
+    } catch (error) {
+      this.logger.error('Error consultando productos', error.stack);
+      return {
+        status: 'error',
+        message: 'Error consultando productos',
+        error: error.message,
+        data: id
+      };      
+    }    
   }
 
   async findAll() {
@@ -47,11 +64,14 @@ export class ProductoService {
     return `This action returns a #${id} producto`;
   }
 
-  update(id: number, updateProductoDto: UpdateProductoDto) {
-
+  async update(id: number, updateProductoDto: Product) {
     try {
+
+      const { id, nombre, descripcion, precio, categoria, imagen } = updateProductoDto;
       
-      this.logger.debug(`Editando Producto id: ${id}`);
+      this.logger.debug(`Editando Producto id: ${JSON.stringify(updateProductoDto)}`);
+      await this.neoPool.query(updateProducts, [id, nombre, descripcion, precio, categoria, imagen]);
+
       return {
         status: 'success',
         message: 'Productos editado exitosamente',
@@ -63,12 +83,30 @@ export class ProductoService {
         status: 'error',
         message: 'Error consultando productos',
         error: error.message,
-        data: []
+        data: id
       };      
     }      
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} producto`;
+  async remove(id: number) {
+    try {
+      
+      this.logger.debug(`Eliminando Producto id: ${JSON.stringify(id)}`);
+      await this.neoPool.query(deleteProducts, [id]);
+
+      return {
+        status: 'success',
+        message: 'Producto eliminado exitosamente',
+        data: id,
+      };
+    } catch (error) {
+      this.logger.error('Error eliminado producto', error.stack);
+      return {
+        status: 'error',
+        message: 'Error eliminado producto',
+        error: error.message,
+        data: id
+      };      
+    }  
   }
 }

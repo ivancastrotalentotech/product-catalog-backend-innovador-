@@ -17,7 +17,16 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "ts-compile": "webpack --config webpack.config.ts",
+    "pkg": "rm -rf pkg && rm -rf dist &&  rm -rf build &&  mkdir dist && mkdir build && yarn build && yarn ts-compile && rm -rf dist && pkg package.json --compress GZip --output ./pkg/catalogo-productos-backend && rm -rf dist &&  rm -rf build"
+  },
+  "bin": "./build/catalogo-productos-backend.js",
+  "pkg": {
+    "targets": [
+      "node18-linux-x64"
+    ],
+    "scripts": "catalogo-productos-backend.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -26,9 +35,13 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
     "@types/pg": "^8.11.10",
+    "copy-webpack-plugin": "^12.0.2",
     "pg": "^8.13.1",
+    "pkg": "^5.8.1",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "ts-compile": "^2.0.6",
+    "webpack-cli": "^5.1.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

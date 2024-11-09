@@ -12,7 +12,7 @@ app.post('/webhook', (req, res) => {
       console.error(`Error: ${error.message}`);
       return;
     }
-    console.log(`Output: ${stdout}`);
+    //console.log(`Output: ${stdout}`);
     res.status(200).send('Deploy script executed');
   });
 });

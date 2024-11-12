@@ -7,12 +7,13 @@ app.post('/webhook', (req, res) => {
   const serverTime = new Date().toLocaleString();
   console.log(`Webhook triggered at server time: ${serverTime}`);
 
+  console.log(`Iniciando Output`);
   exec('/home/ubuntu/deploy.sh', (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${error.message}`);
       return;
     }
-    //console.log(`Output: ${stdout}`);
+    console.log(`Finalizando Output`);
     res.status(200).send('Deploy script executed');
   });
 });

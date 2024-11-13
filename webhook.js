@@ -8,7 +8,7 @@ app.post('/webhook', (req, res) => {
   console.log(`Webhook triggered at server time: ${serverTime}`);
 
   console.log(`Iniciando Output`);
-  exec('/home/ubuntu/deploy.sh', (error, stdout, stderr) => {
+  exec('/home/ec2-user/environment/deploy.sh', (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${error.message}`);
       return;
